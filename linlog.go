@@ -27,3 +27,32 @@ func BinDownOf(size uint64, linear, subbin uint64) (rounded uint64, bucket uint6
 
 	return (subIndex << shift), (xrange << subbin) + subIndex
 }
+
+func Bins(max uint64, linear, subbin uint64) []uint64 {
+	var buckets []uint64
+	buckets = append(buckets, 0)
+
+	var size uint64
+	var incr uint64 = 1 << (linear - subbin)
+
+	for size < (1 << linear) {
+		size += incr
+		if size >= max {
+			break
+		}
+		buckets = append(buckets, size)
+	}
+
+	for size < max {
+		for steps := uint64(0); steps < (1 << subbin); steps++ {
+			size += incr
+			buckets = append(buckets, size)
+			if size > max {
+				break
+			}
+		}
+		incr <<= 1
+	}
+
+	return buckets
+}
