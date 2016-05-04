@@ -1,6 +1,9 @@
 package linlog
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestBinOf(t *testing.T) {
 
@@ -102,6 +105,42 @@ func TestBinDownOf(t *testing.T) {
 	for _, tt := range tests {
 		if r, b := BinDownOf(tt.sz, tt.l, tt.b); r != tt.wsz || b != tt.wb {
 			t.Errorf("BinDownOf(%d,%d,%d)=(%d,%d), want (%d,%d)", tt.sz, tt.l, tt.b, r, b, tt.wsz, tt.wb)
+		}
+	}
+}
+
+func TestBins(t *testing.T) {
+	var tests = []struct {
+		m, l, s uint64
+	}{
+		{1024, 4, 2},
+		{1024, 4, 4},
+		{1024, 5, 2},
+		{1024, 5, 3},
+		{1024, 5, 4},
+		{1024, 6, 2},
+		{1024, 6, 3},
+		{1024, 6, 4},
+		{1024, 6, 5},
+	}
+
+	for _, tt := range tests {
+		var bins []uint64
+		var prev uint64 = ^uint64(0)
+		for i := uint64(0); i < tt.m; i++ {
+			r, _ := BinOf(uint64(i), tt.l, tt.s)
+			if r != prev {
+				bins = append(bins, r)
+				prev = r
+			}
+		}
+
+		b := Bins(tt.m, tt.l, tt.s)
+
+		t.Logf("Bins(%v,%v,%v)=%v", tt.m, tt.l, tt.s, b)
+
+		if !reflect.DeepEqual(b, bins) {
+			t.Errorf("Bins(%v,%v,%v)=%v, want %v\n", tt.m, tt.l, tt.s, b, bins)
 		}
 	}
 }
