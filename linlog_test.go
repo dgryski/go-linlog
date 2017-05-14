@@ -126,7 +126,7 @@ func TestBins(t *testing.T) {
 
 	for _, tt := range tests {
 		var bins []uint64
-		var prev uint64 = ^uint64(0)
+		prev := ^uint64(0)
 		for i := uint64(0); i < tt.m; i++ {
 			r, _ := BinOf(uint64(i), tt.l, tt.s)
 			if r != prev {
