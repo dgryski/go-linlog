@@ -1,7 +1,6 @@
 package linlog
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -139,8 +138,23 @@ func TestBins(t *testing.T) {
 
 		t.Logf("Bins(%v,%v,%v)=%v", tt.m, tt.l, tt.s, b)
 
-		if !reflect.DeepEqual(b, bins) {
+		if !equalU64s(b, bins) {
 			t.Errorf("Bins(%v,%v,%v)=%v, want %v\n", tt.m, tt.l, tt.s, b, bins)
 		}
 	}
+}
+
+func equalU64s(a, b []uint64) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+
+	}
+
+	return true
 }
